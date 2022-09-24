@@ -7,8 +7,8 @@ ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=Etc/UTC
 
 # [Optional] Install additional packages.
-RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-    && apt-get -y install --no-install-recommends \
+RUN apt-get -qq update && export DEBIAN_FRONTEND=noninteractive \
+    && apt-get -y -qq install --no-install-recommends \
     build-essential gfortran devscripts wget cmake software-properties-common dirmngr \
     libopenblas-dev libgsl-dev
 
@@ -25,3 +25,6 @@ RUN mkdir catch2 && \
     cmake -B catch2/build -S catch2 -DCMAKE_INSTALL_PREFIX=/usr . && \
     cmake --build catch2/build --config Release && \
     cmake --install catch2/build
+
+COPY entrypoint.sh /entrypoint.sh
+ENTRYPOINT [ "/entrypoint.sh" ]
