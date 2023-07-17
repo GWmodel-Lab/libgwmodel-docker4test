@@ -2,9 +2,8 @@ FROM mcr.microsoft.com/windows/servercore:ltsc2022
 
 SHELL ["powershell", "-command"]
 RUN Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iwr https://community.chocolatey.org/install.ps1 -UseBasicParsing | iex
-RUN choco install visualstudio2019-workload-vctools git cmake
-RUN $newPath=(("C:/Program Files/Git/bin", "C:/Program Files/CMake/bin") + ($env:Path -split ';')) -join ';'
-RUN [Environment]::SetEnvironmentVariable("Path", $newPath, "Machine"); [Environment]::SetEnvironmentVariable("VCPKG_DEFAULT_TRIPLET", "x64-windows", "Machine")
-RUN git clone https://github.com/microsoft/vcpkg.git; cd vcpkg; ./bootstrap-vcpkg.bat; ./vcpkg install armadillo gsl openblas[threads] catch2
+RUN choco install visualstudio2019-workload-vctools git cmake -q -y
+RUN $newPath=(('C:\Program Files\Git\bin', 'C:\Program Files\CMake\bin') + ([Environment]::GetEnvironmentVariable('Path', 'Machine') -split ';')) -join ';'; [Environment]::SetEnvironmentVariable('Path', $newPath, 'Machine'); [Environment]::SetEnvironmentVariable('VCPKG_DEFAULT_TRIPLET', 'x64-windows', 'Machine')
+RUN git clone https://github.com/microsoft/vcpkg; .\vcpkg\bootstrap-vcpkg.bat; .\vcpkg\vcpkg install armadillo gsl openblas[threads] catch2
 
 ENTRYPOINT powershell.exe
