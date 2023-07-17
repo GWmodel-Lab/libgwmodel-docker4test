@@ -5,5 +5,6 @@ RUN Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointMa
 RUN choco install visualstudio2019-workload-vctools git cmake -q -y
 RUN $newPath=(('C:\Program Files\Git\bin', 'C:\Program Files\CMake\bin') + ([Environment]::GetEnvironmentVariable('Path', 'Machine') -split ';')) -join ';'; [Environment]::SetEnvironmentVariable('Path', $newPath, 'Machine'); [Environment]::SetEnvironmentVariable('VCPKG_DEFAULT_TRIPLET', 'x64-windows', 'Machine')
 RUN git clone https://github.com/microsoft/vcpkg; .\vcpkg\bootstrap-vcpkg.bat; .\vcpkg\vcpkg install armadillo gsl openblas[threads] catch2
+RUN rm -Recurse C:\vcpkg\buildtrees; rm -Recurse C:\vcpkg\downloads; rm -Recurse C:\vcpkg\packages
 
 ENTRYPOINT powershell.exe
